@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\TodoRequest;
+use App\Http\Resources\TodoResource;
 class ProductController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        $todos = Product::all();
+
+        return TodoResource::collection($todos);
     }
 
     /**
@@ -23,15 +26,9 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TodoRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'slug' => 'required',
-            'price' => 'required'
-        ]);
-
-        return Product::create($request->all());
+        return $request->save();
     }
 
     /**
@@ -42,7 +39,10 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return Product::find($id);
+         
+        $todo = Product::find($id);
+
+        return new TodoResource($todo);
     }
 
     /**
