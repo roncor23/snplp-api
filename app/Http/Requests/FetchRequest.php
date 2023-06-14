@@ -3,13 +3,11 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Product;
+use App\Models\Personal;
 
-class TodoRequest extends FormRequest
+
+class FetchRequest extends FormRequest
 {
-
-    public $todo;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -20,18 +18,17 @@ class TodoRequest extends FormRequest
         return true;
     }
 
-    public function save() {
-        return Product::create($this->validated());
+    public function getSingleData($id) {
+
+        return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')->where('id', $id)->get();
+                  
     }
 
+    public function getData() {
 
-    // public function save() {
+        return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')->get();
 
-    //     $this->todo = Product::create($request->all());
-
-
-    //     return $this->todo;
-    // }
+    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -41,9 +38,7 @@ class TodoRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'slug' => 'required',
-            'price' => 'required'
+            //
         ];
     }
 }

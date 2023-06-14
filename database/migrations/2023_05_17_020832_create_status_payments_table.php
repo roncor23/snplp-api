@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('status_payments', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('slug');
-            $table->string('description')->nullable();
-            $table->decimal('price', 5, 2);
+            $table->unsignedBigInteger('personal_id');
+            $table->string('status')->nullable();
+            $table->string('submitted_nbi')->nullable();
             $table->timestamps();
+            $table->foreign('personal_id')->references('id')->on('personal_informations')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('status_payments');
     }
 };
