@@ -36,5 +36,28 @@ class PersonalController extends Controller
 
     }
 
+    public function get_total_loan(FetchRequest $request) {
+
+        return $request->getTotalLoan();
+    }
+
+    public function get_total_interest(FetchRequest $request) {
+
+        return $request->getTotalInterest();
+    }
+
+    public function get_total_penalty(FetchRequest $request) {
+
+        return $request->getTotalPenalty();
+    }
+
+    public function get_total_amortization(FetchRequest $request) {
+        return $request->getTotalAmortization();
+    }
+
+    public function get_total_amount_paid(FetchRequest $request) {
+        return $request->getTotalAmountPaid();
+    }
+
 
 }

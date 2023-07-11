@@ -17,6 +17,8 @@ class DataRequest extends FormRequest
         return true;
     }
 
+
+
     public function saveData() {
 
         $data = $this->validated();
