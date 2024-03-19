@@ -12,9 +12,9 @@ use App\Http\Resources\PersonalResource;
 class PersonalController extends Controller
 {
 
-    public function index(FetchRequest $request) {
+    public function index(FetchRequest $request, $page) {
         
-        return PersonalResource::collection($request->getData());
+        return PersonalResource::collection($request->getData($page));
         
     }
 

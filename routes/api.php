@@ -23,7 +23,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::post('/data', [PersonalController::class, 'store']);
-    Route::get('/data', [PersonalController::class, 'index']);
+    Route::get('/data/{page}', [PersonalController::class, 'index']);
     Route::post('/data/{id}', [PersonalController::class, 'update']);
     Route::get('/data/{id}', [PersonalController::class, 'show']);
     Route::post('/logout', [AuthController::class, 'logout']);

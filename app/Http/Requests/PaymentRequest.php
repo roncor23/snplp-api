@@ -42,7 +42,6 @@ class PaymentRequest extends FormRequest
             'date_paid' => $data['date_paid'],
             'amount_paid' => $data['amount_paid'],
             'confirmation_number' => $data['confirmation_number'],
-
         ]);
 
         return $payment;

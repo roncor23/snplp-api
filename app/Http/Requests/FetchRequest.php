@@ -29,9 +29,10 @@ class FetchRequest extends FormRequest
         return Payment::where('personal_id', $id)->get();
     }
 
-    public function getData() {
+    public function getData($page) {
 
-        return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')->get();
+        return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+                ->paginate(10, ['*'], 'page', $page);
 
     }
 
