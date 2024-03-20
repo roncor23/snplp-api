@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Personal;
+use App\Models\Repayment;
 
 class Disbursement extends Model
 {
@@ -22,5 +23,10 @@ class Disbursement extends Model
 
     public function personal() {
         return $this->belongsTo(Personal::class, 'per_id');
+    }
+
+     public function repaymentInfo()
+    {
+        return $this->hasOne(Repayment::class);
     }
 }

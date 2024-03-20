@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::post('/data', [PersonalController::class, 'store']);
     Route::get('/data/{page}', [PersonalController::class, 'index']);
+    Route::get('/status-data/{status}/{page}', [PersonalController::class, 'fetchByStatus']);
     Route::post('/data/{id}', [PersonalController::class, 'update']);
     Route::get('/data/{id}', [PersonalController::class, 'show']);
     Route::post('/logout', [AuthController::class, 'logout']);

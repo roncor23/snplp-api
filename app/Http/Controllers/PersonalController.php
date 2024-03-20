@@ -18,6 +18,10 @@ class PersonalController extends Controller
         
     }
 
+    public function fetchByStatus(FetchRequest $request, $page, $status) {
+        return PersonalResource::collection($request->getDataByStatus($page, $status));
+    }
+
     public function store(DataRequest $request) {
 
         return new PersonalResource($request->saveData());

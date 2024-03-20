@@ -7,6 +7,8 @@ use App\Models\Personal;
 use App\Models\Disbursement;
 use App\Models\Payment;
 use App\Models\Repayment;
+use Illuminate\Support\Facades\DB;
+
 
 class FetchRequest extends FormRequest
 {
@@ -33,8 +35,40 @@ class FetchRequest extends FormRequest
 
         return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
                 ->paginate(10, ['*'], 'page', $page);
+        
+    }
+
+    public function getDataByStatus($status, $page) {
+        if($status == 1) {
+            return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+            ->whereHas('disbursementInfo', function ($query) {
+                $query->whereExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                        ->from('repayments')
+                        ->whereRaw('repayments.personal_id = disbursements.personal_id')
+                        ->whereRaw('disbursements.total_full_amortization = repayments.total_amount_paid');
+                });
+            })
+            ->paginate(10, ['*'], 'page', $page);   
+        
+        }
+        if($status == 0) {
+            return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+            ->whereHas('disbursementInfo', function ($query) {
+                $query->whereExists(function ($subquery) {
+                    $subquery->select(DB::raw(1))
+                        ->from('repayments')
+                        ->whereRaw('repayments.personal_id = disbursements.personal_id')
+                        ->whereRaw('disbursements.total_full_amortization <> repayments.total_amount_paid');
+                });
+            })
+            ->paginate(10, ['*'], 'page', $page);   
+        
+        }
 
     }
+    
+    
 
     public function getTotalLoan() {
 
