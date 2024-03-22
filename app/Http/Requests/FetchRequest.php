@@ -40,7 +40,8 @@ class FetchRequest extends FormRequest
 
     public function getDataByStatus($status, $page) {
         if($status == 1) {
-            return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+
+            $personalData = Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
             ->whereHas('disbursementInfo', function ($query) {
                 $query->whereExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
@@ -49,11 +50,41 @@ class FetchRequest extends FormRequest
                         ->whereRaw('disbursements.total_full_amortization = repayments.total_amount_paid');
                 });
             })
-            ->paginate(10, ['*'], 'page', $page);   
+            ->paginate(10, ['*'], 'page', $page);
+
+
+            $totalPaid = Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+             ->whereHas('disbursementInfo', function ($query) {
+                 $query->whereExists(function ($subquery) {
+                     $subquery->select(DB::raw(1))
+                         ->from('repayments')
+                        ->whereRaw('repayments.personal_id = disbursements.personal_id')
+                        ->whereRaw('disbursements.total_full_amortization = repayments.total_amount_paid');
+                 });
+             })
+             ->get();  
+  
+
+             // Calculate the total sum of total_amount_paid
+            $totalSumPaid = $totalPaid->sum(function ($item) {
+                return $item->repaymentInfo->total_amount_paid;
+            });
+
+            $totalSumBalance = $totalPaid->sum(function ($item) {
+                return $item->repaymentInfo->outstanding_balance;
+            });
+
+            return [
+                'personalData' => $personalData,
+                'totalSumPaid' => $totalSumPaid,
+                'totalSumBalance' => $totalSumBalance,
+                'beneficiariesCount' => $totalPaid->count(),
+            ];
+
         
         }
         if($status == 0) {
-            return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+            $personalData = Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
             ->whereHas('disbursementInfo', function ($query) {
                 $query->whereExists(function ($subquery) {
                     $subquery->select(DB::raw(1))
@@ -62,7 +93,69 @@ class FetchRequest extends FormRequest
                         ->whereRaw('disbursements.total_full_amortization <> repayments.total_amount_paid');
                 });
             })
-            ->paginate(10, ['*'], 'page', $page);   
+            ->paginate(10, ['*'], 'page', $page);
+
+
+            $totalPaid = Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+             ->whereHas('disbursementInfo', function ($query) {
+                 $query->whereExists(function ($subquery) {
+                     $subquery->select(DB::raw(1))
+                         ->from('repayments')
+                        ->whereRaw('repayments.personal_id = disbursements.personal_id')
+                         ->whereRaw('disbursements.total_full_amortization <> repayments.total_amount_paid');
+                 });
+             })
+             ->get();  
+  
+
+             // Calculate the total sum of total_amount_paid
+            $totalSumPaid = $totalPaid->sum(function ($item) {
+                return $item->repaymentInfo->total_amount_paid;
+            });
+
+            $totalSumBalance = $totalPaid->sum(function ($item) {
+                return $item->repaymentInfo->outstanding_balance;
+            });
+
+            return [
+                'personalData' => $personalData,
+                'totalSumPaid' => $totalSumPaid,
+                'totalSumBalance' => $totalSumBalance,
+                'beneficiariesCount' => $totalPaid->count(),
+            ];
+        
+        }
+
+        if($status == 2) {
+            $personalData = Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+            ->whereHas('repaymentInfo', function ($query) {
+                $query->where('total_amount_paid', 0);
+            })
+            ->paginate(10, ['*'], 'page', $page);
+
+
+            $totalPaid = Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+            ->whereHas('repaymentInfo', function ($query) {
+                $query->where('total_amount_paid', 0);
+            })
+             ->get();  
+  
+
+             // Calculate the total sum of total_amount_paid
+            $totalSumPaid = $totalPaid->sum(function ($item) {
+                return $item->repaymentInfo->total_amount_paid;
+            });
+
+            $totalSumBalance = $totalPaid->sum(function ($item) {
+                return $item->repaymentInfo->outstanding_balance;
+            });
+
+            return [
+                'personalData' => $personalData,
+                'totalSumPaid' => $totalSumPaid,
+                'totalSumBalance' => $totalSumBalance,
+                'beneficiariesCount' => $totalPaid->count(),
+            ];
         
         }
 

@@ -19,7 +19,25 @@ class PersonalController extends Controller
     }
 
     public function fetchByStatus(FetchRequest $request, $page, $status) {
-        return PersonalResource::collection($request->getDataByStatus($page, $status));
+
+        $personalData = $request->getDataByStatus($page, $status);
+        $paginator = $personalData['personalData'] ?? null;
+        $totalSumPaid = $personalData['totalSumPaid'] ?? null;
+        $totalSumBalance = $personalData['totalSumBalance'] ?? null;
+        $beneficiariesCount = $personalData['beneficiariesCount'] ?? null;
+
+        return [
+            'data' => PersonalResource::collection($paginator->items()),
+            'meta' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+            ],
+            'totalSumPaid' => $totalSumPaid,
+            'totalSumBalance' => $totalSumBalance,
+            'beneficiariesCount' => $beneficiariesCount,
+        ];
+
     }
 
     public function store(DataRequest $request) {

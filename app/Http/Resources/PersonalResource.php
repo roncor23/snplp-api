@@ -37,5 +37,14 @@ class PersonalResource extends JsonResource
         ];
     }
 
+     public function with($request)
+    {
+        return [
+            'totalSum' => $this->resource['totalSum'] ?? null,
+            'totalSumBalance' => $this->resource['totalSumBalance'] ?? null,
+            'beneficiariesCount' => $this->resource['beneficiariesCount'] ?? null,
+        ];
+    }
+
 
 }
