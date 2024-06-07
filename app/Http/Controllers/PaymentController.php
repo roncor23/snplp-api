@@ -7,6 +7,7 @@ use App\Http\Requests\PaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Http\Requests\FetchRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Http\Requests\DeleteRequest;
 
 class PaymentController extends Controller
 {
@@ -26,5 +27,9 @@ class PaymentController extends Controller
 
         return new PaymentResource($request->updateBenefeciaryData($id));
 
+    }
+
+    public function delete(DeleteRequest $request, $id) {
+        return $request->deletePayment($id);
     }
 }

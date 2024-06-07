@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,13 +26,20 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/data', [PersonalController::class, 'store']);
     Route::get('/data/{page}', [PersonalController::class, 'index']);
     Route::get('/status-data/{status}/{page}', [PersonalController::class, 'fetchByStatus']);
+    Route::get('/search-beneficiaries/{search}', [PersonalController::class, 'searchByBeneficiaries']);
     Route::post('/data/{id}', [PersonalController::class, 'update']);
     Route::get('/data/{id}', [PersonalController::class, 'show']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/payment', [PaymentController::class, 'store']);
+    Route::post('/payment-del/{id}', [PaymentController::class, 'delete']);
     Route::get('/payment/{id}', [PaymentController::class, 'per_beneficiary']);
     Route::post('/payment/{id}', [PaymentController::class, 'update']);
+
+    Route::post('/status', [StatusController::class, 'store']);
+    Route::post('/status-del/{id}', [StatusController::class, 'delete']);
+    Route::get('/status/{id}', [StatusController::class, 'per_beneficiary']);
+    Route::post('/status/{id}', [StatusController::class, 'update']);
 
 
     Route::get('/loan', [PersonalController::class, 'get_total_loan']);

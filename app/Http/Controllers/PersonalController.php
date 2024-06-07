@@ -18,6 +18,12 @@ class PersonalController extends Controller
         
     }
 
+    public function searchByBeneficiaries(FetchRequest $request, $search) {
+
+        return $request->searchByLastFirstName($search);
+        
+    }
+
     public function fetchByStatus(FetchRequest $request, $page, $status) {
 
         $personalData = $request->getDataByStatus($page, $status);

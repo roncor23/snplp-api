@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Personal;
+use App\Models\Statuses;
 use App\Models\Disbursement;
 use App\Models\Payment;
 use App\Models\Repayment;
@@ -22,6 +23,15 @@ class FetchRequest extends FormRequest
         return true;
     }
 
+    public function searchByLastFirstName($search) {
+
+        return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')
+        ->where('first_name', strtoupper($search))
+        ->orWhere('last_name', strtoupper($search))
+        ->get();
+
+    }
+
     public function getSingleData($id) {
 
         return Personal::with('employmentInfo', 'statusInfo', 'disbursementInfo', 'repaymentInfo')->where('id', $id)->get();             
@@ -29,6 +39,10 @@ class FetchRequest extends FormRequest
 
     public function getPaymentsPerBeneficiary($id) {
         return Payment::where('personal_id', $id)->get();
+    }
+
+    public function getStatusesPerBeneficiary($id) {
+        return Statuses::where('personal_id', $id)->get();
     }
 
     public function getData($page) {

@@ -14,6 +14,12 @@ class StatusResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'personal_id' => $this->personal_id,
+            'date' => $this->date,
+            'action_taken' => $this->action_taken,
+            'encoded_by' => $this->encoded_by,
+        ];
     }
 }
